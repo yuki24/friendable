@@ -72,7 +72,7 @@ describe Friendable::UserMethods do
       before { current_user.friend!(target_user) }
       subject { current_user.friendships.first }
       it { should be_a(Friendable::Friendship) }
-      its(:resource) { should == target_user }
+      its(:target_resource) { should == target_user }
       its(:created_at) { should be_a(ActiveSupport::TimeWithZone) }
       its(:updated_at) { should be_a(ActiveSupport::TimeWithZone) }
     end

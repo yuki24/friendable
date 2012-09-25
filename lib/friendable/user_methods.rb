@@ -21,7 +21,7 @@ module Friendable
 
     def friendships
       @_friendships ||= Friendable.resource_class.find(raw_friend_hashes.keys).map do |resource|
-        Friendship.deserialize!(friend_list_key, resource, raw_friend_hashes[resource.id.to_s])
+        Friendship.deserialize!(self, resource, raw_friend_hashes[resource.id.to_s])
       end
     end
 
@@ -29,7 +29,7 @@ module Friendable
       raw_friendship = @_raw_friend_hashes.try(:[], target_resource.id.to_s) || redis.hget(friend_list_key, target_resource.id)
 
       if raw_friendship
-        Friendship.deserialize!(friend_list_key, target_resource, raw_friendship)
+        Friendship.deserialize!(self, target_resource, raw_friendship)
       else
         raise Friendable::FriendshipNotFound, "user:#{self.id} is not a friend of the user:#{target_resource.id}"
       end
@@ -44,10 +44,10 @@ module Friendable
     end
 
     def friend!(resource, options = {})
-      Friendship.new(resource, options).tap do |friendship|
+      Friendship.new(self, resource, options).tap do |friendship|
         redis.multi do
-          redis.hsetnx(friend_list_key, friendship.resource.id, friendship.to_msgpack)
-          redis.hsetnx(resource.friend_list_key, self.id, friendship.without_options.to_msgpack)
+          friendship.save
+          Friendship.new(resource, self).save
         end
       end
     end

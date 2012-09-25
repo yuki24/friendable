@@ -2,15 +2,14 @@ require 'msgpack'
 
 module Friendable
   class Friendship
-    attr_accessor :resource
-    alias :friend :resource
+    attr_accessor :target_resource, :source_resource
+    alias :friend :target_resource
 
-    def initialize(target_resource, attrs = {}, options = {})
-      @resource = target_resource
-      (@redis_key = options[:redis_key]).freeze if options[:redis_key]
-      attrs[:created_at] ||= (time = Time.zone.now)
-      attrs[:updated_at] ||= (time ||= Time.zone.now)
-      @attributes = attrs.symbolize_keys
+    def initialize(source_resource, target_resource, attrs = {})
+      # options = attrs.delete(:options) if attrs[:options]
+      @source_resource = source_resource
+      @target_resource = target_resource
+      @attributes = attrs.reverse_merge!(:created_at => nil, :updated_at => nil).symbolize_keys
     end
 
     def write_attribute(attr_name, value)
@@ -18,12 +17,14 @@ module Friendable
     end
 
     def save
+      write_attribute(:created_at, Time.zone.now) unless @attributes[:created_at]
       write_attribute(:updated_at, Time.zone.now)
-      Friendable.redis.hset(redis_key, resource.id, self.to_msgpack)
+
+      Friendable.redis.hset(redis_key, target_resource.id, self.to_msgpack)
     end
 
     def without_options
-      Friendship.new(@resource, @attributes.slice(:created_at, :updated_at))
+      Friendship.new(source_resource, target_resource, @attributes.slice(:created_at, :updated_at))
     end
 
     def to_msgpack
@@ -38,17 +39,17 @@ module Friendable
     #
     # @return [ String ] The inspection string.
     def inspect
-      "#<Friendable::Friendship with: #<#{@resource.class} id: #{@resource.id}>, " <<
+      "#<Friendable::Friendship with: #{@target_resource.class}(id: #{@target_resource.id}), " <<
       "attributes: " <<
       @attributes.to_a.map{|ary| ary.join(": ") }.join(", ") << ">"
     end
 
-    def self.deserialize!(redis_key, resource, options)
+    def self.deserialize!(source_resource, target_resource, options)
       attrs = MessagePack.unpack(options).symbolize_keys
       attrs[:created_at] = Time.zone.at(attrs[:created_at])
       attrs[:updated_at] = Time.zone.at(attrs[:updated_at])
 
-      Friendship.new(resource, attrs, :redis_key => redis_key)
+      Friendship.new(source_resource, target_resource, attrs)
     end
 
     private
@@ -65,13 +66,13 @@ module Friendable
     end
 
     def redis_key
-      @redis_key ? @redis_key : raise(::ArgumentError, "No redis key found")
+      source_resource.friend_list_key
     end
 
     def serializable
       @attributes.clone.tap do |serializable_object|
-        serializable_object[:created_at] = serializable_object[:created_at].utc.to_i
-        serializable_object[:updated_at] = serializable_object[:updated_at].utc.to_i
+        serializable_object[:created_at] = serializable_object[:created_at].try(:utc).try(:to_i)
+        serializable_object[:updated_at] = serializable_object[:updated_at].try(:utc).try(:to_i)
       end
     end
   end

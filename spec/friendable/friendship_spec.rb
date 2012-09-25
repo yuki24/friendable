@@ -14,13 +14,13 @@ describe Friendable::Friendship do
 
   describe "initialization" do
     context "without options" do
-      subject { Friendable::Friendship.new(target_user) }
-      its(:created_at) { should be_a(ActiveSupport::TimeWithZone) }
-      its(:updated_at) { should be_a(ActiveSupport::TimeWithZone) }
+      subject { Friendable::Friendship.new(current_user, target_user) }
+      its(:created_at) { should be_nil }
+      its(:updated_at) { should be_nil }
     end
 
     context "with several options" do
-      subject { Friendable::Friendship.new(target_user, :foo => "bar", :hoge => "fuga") }
+      subject { Friendable::Friendship.new(current_user, target_user, :foo => "bar", :hoge => "fuga") }
       its(:foo) { should == "bar" }
       its(:hoge) { should == "fuga" }
     end
@@ -28,13 +28,13 @@ describe Friendable::Friendship do
 
   describe "serialization" do
     context "with options" do
-      let(:friendship) { Friendable::Friendship.new(target_user, :foo => "bar", :hoge => "fuga") }
+      let(:friendship) { Friendable::Friendship.new(current_user, target_user, :foo => "bar", :hoge => "fuga") }
       specify do
         MessagePack.unpack(friendship.to_msgpack).should == {
           "foo" => "bar",
           "hoge" => "fuga",
-          "created_at" => friendship.created_at.utc.to_i,
-          "updated_at" => friendship.updated_at.utc.to_i
+          "created_at" => nil,
+          "updated_at" => nil
         }
       end
     end
@@ -45,9 +45,9 @@ describe Friendable::Friendship do
     let(:msgpacked_data) { {:created_at => current_timestamp, :updated_at => current_timestamp}.to_msgpack }
 
     context "with options" do
-      subject { Friendable::Friendship.deserialize!(current_user.friend_list_key, target_user, msgpacked_data) }
+      subject { Friendable::Friendship.deserialize!(current_user, target_user, msgpacked_data) }
       it { should be_a(Friendable::Friendship) }
-      its(:resource) { should == target_user }
+      its(:target_resource) { should == target_user }
       its(:created_at) { should == Time.zone.at(current_timestamp) }
       its(:updated_at) { should == Time.zone.at(current_timestamp) }
     end

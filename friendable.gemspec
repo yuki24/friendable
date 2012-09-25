@@ -4,9 +4,9 @@ require File.expand_path('../lib/friendable/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.authors       = ["Yuki Nishijima"]
   gem.email         = ["mail@yukinishijima.net"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
-  gem.homepage      = ""
+  gem.description   = %q{Redis backed friendship engine for your Ruby models}
+  gem.summary       = %q{Redis backed friendship engine for your Ruby models}
+  gem.homepage      = "https://github.com/yuki24/friendable"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
@@ -14,4 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "friendable"
   gem.require_paths = ["lib"]
   gem.version       = Friendable::VERSION
+
+  s.add_dependency 'activesupport', '>= 3.0.0'
+  s.add_dependency 'msgpack'
 end

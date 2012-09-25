@@ -10,7 +10,7 @@ describe Friendable do
     context "with the default redis" do
       subject { Friendable.redis.client }
       it { should be_a(Redis::Client) }
-      its(:host) { should == "localhost" }
+      its(:host) { should == "127.0.0.1" }
       its(:port) { should == 6379 }
     end
 

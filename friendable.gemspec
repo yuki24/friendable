@@ -15,6 +15,12 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.version       = Friendable::VERSION
 
-  s.add_dependency 'activesupport', '>= 3.0.0'
-  s.add_dependency 'msgpack'
+  gem.add_dependency 'msgpack'
+  gem.add_dependency 'activesupport', '>= 3.0.0'
+  gem.add_dependency 'redis-namespace'
+  gem.add_dependency 'keytar'
+
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'activerecord'
+  gem.add_development_dependency 'sqlite3'
 end

@@ -9,8 +9,8 @@ require 'spec_helper'
 describe Friendable::UserMethods do
   def redis; Friendable.redis; end
   before(:each) { redis.flushdb }
-  let(:current_user) { FactoryGirl.create(:user) }
-  let(:target_user) { FactoryGirl.create(:another_user) }
+  let(:current_user) { User.first }
+  let(:target_user) { User.last }
 
   subject { current_user }
   its(:friend_list_key) { should == "Users:friend_list:1" }

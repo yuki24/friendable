@@ -1,3 +1,6 @@
+require 'active_support/concern'
+require 'keytar'
+
 module Friendable
   module UserMethods
     extend ActiveSupport::Concern

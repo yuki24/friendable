@@ -1,3 +1,5 @@
+require 'msgpack'
+
 module Friendable
   class Friendship
     attr_accessor :resource

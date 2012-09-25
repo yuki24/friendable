@@ -2,6 +2,7 @@ require "friendable/version"
 require "friendable/user_methods"
 require "friendable/friendship"
 require "friendable/exceptions"
+require "redis-namespace"
 
 module Friendable
   extend self

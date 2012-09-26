@@ -23,10 +23,6 @@ module Friendable
       Friendable.redis.hset(redis_key, target_resource.id, self.to_msgpack)
     end
 
-    def without_options
-      Friendship.new(source_resource, target_resource, @attributes.slice(:created_at, :updated_at))
-    end
-
     def to_msgpack
       serializable.to_msgpack
     end

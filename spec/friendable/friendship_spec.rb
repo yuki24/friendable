@@ -94,13 +94,6 @@ describe Friendable::Friendship do
     let(:friendship) { current_user.friendship_with(target_user) }
 
     it "should persist the newly assigned value" do
-      friendship.write_attribute(:another_option, "another_value")
-      friendship.save
-
-      current_user.friendship_with(target_user).another_option.should == "another_value"
-    end
-
-    it "should persist the newly assigned value" do
       created_at = friendship.created_at
       updated_at = friendship.updated_at
       sleep 1

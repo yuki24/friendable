@@ -97,7 +97,7 @@ user.friends.include?(another_user)        # => false
 user.friend_ids.include?(another_user.id)  # => false
 ```
 
-For more details, have a look at the documentation.
+For more details, have a look at the [documentation](http://rubydoc.info/gems/friendable/0.1.0/frames).
 
 ## Support
 

@@ -16,7 +16,7 @@ module Friendable
     end
 
     def friends
-      @_friends ||= Friendable.resource_class.where(id: friend_ids)
+      @_friends ||= Friendable.resource_class.where(:id => friend_ids)
     end
 
     def friendships

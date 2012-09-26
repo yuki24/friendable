@@ -24,8 +24,8 @@ CreateAllTables.up
 class User < ActiveRecord::Base
   include Friendable::UserMethods
 end
-User.create!(name: "Some User")
-User.create!(name: "Another User")
+User.create!(:name => "Some User")
+User.create!(:name => "Another User")
 
 # default time sone
 Time.zone = "UTC"

@@ -15,7 +15,7 @@ describe Friendable do
     end
 
     context "with an object of Redis class" do
-      before { Friendable.redis = Redis.new(host: "127.0.0.1", port: 6379) }
+      before { Friendable.redis = Redis.new(:host => "127.0.0.1", :port => 6379) }
       subject { Friendable.redis.client }
       it { should be_a(Redis::Client) }
       its(:host) { should == "127.0.0.1" }

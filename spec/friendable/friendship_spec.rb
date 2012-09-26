@@ -35,7 +35,7 @@ describe Friendable::Friendship do
 
       context "after the definition" do
         before { friendship.write_attribute(:another_attr, "another value") }
-        its(:another_attr) { should == "another value" }        
+        its(:another_attr) { should == "another value" }
         specify do
           friendship.another_attr = "new value"
           friendship.another_attr.should == "new value"

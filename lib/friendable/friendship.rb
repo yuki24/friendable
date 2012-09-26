@@ -34,10 +34,6 @@ module Friendable
     # Get a pretty string representation of the friendship, including the
     # user who is a friend with and attributes for inspection.
     #
-    # @example Inspect the friendship.
-    #   friendship.inspect
-    #
-    # @return [ String ] The inspection string.
     def inspect
       "#<Friendable::Friendship with: #{@target_resource.class}(id: #{@target_resource.id}), " <<
       "attributes: " <<

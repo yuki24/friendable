@@ -39,7 +39,7 @@ module Friendable
       @_raw_friend_ids.try(:count) || @_raw_friend_hashes.try(:count) || redis.hlen(friend_list_key)
     end
 
-    def has_friends?(resource)
+    def friend?(resource)
        @_raw_friend_ids.try(:include?, resource.id.to_s) || @_raw_friend_hashes.try(:has_key?, resource.id.to_s) || redis.hexists(friend_list_key, resource.id)
     end
 

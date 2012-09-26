@@ -56,7 +56,6 @@ module Friendable
 
     def method_missing(method, *args, &block)
       if method.to_s.last == "=" && @attributes.has_key?(method.to_s[0..-2].to_sym)
-        raise ArgumentError, "wrong number of arguments (#{args.size} for 1)" if args.size != 1
         write_attribute(method.to_s[0..-2], args.first)
       elsif @attributes.has_key?(method)
         return @attributes[method]
